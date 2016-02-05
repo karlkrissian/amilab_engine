@@ -1,0 +1,12 @@
+
+#del ModuleExamplePlugin
+#func "ModuleExamplePlugin"
+func "Common/ModulePlugin"
+
+if (!exists(ModuleExample_obj)) {
+  ModulePlugin ModuleExample_obj
+  ModuleExample_obj.SetModuleName("ModuleExample")
+  ModuleExample_obj.Load()
+} else {
+  InfoDialog "The script class ModuleExamplePlugin to be already instanciated." 
+}

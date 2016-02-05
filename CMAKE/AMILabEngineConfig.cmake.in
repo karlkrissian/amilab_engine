@@ -1,0 +1,39 @@
+#==============================================================================
+# AMILab configuration
+#
+# Author: xXx <xXX>, (C) 2010
+#
+# Copyright: See COPYING file that comes with this distribution
+#==============================================================================
+
+
+SET(AMILABENGINE_VERSION_MAJOR  "@AMILABENGINE_VERSION_MAJOR@")
+SET(AMILABENGINE_VERSION_MINOR  "@AMILABENGINE_VERSION_MINOR@")
+SET(AMILABENGINE_VERSION_PATCH  "@AMILABENGINE_VERSION_PATCH@")
+SET(AMILABENGINE_VERSION        "@AMILABENGINE_VERSION@")
+
+SET(AMILabEngine_SOURCE_DIR     "@AMILabEngine_SOURCE_DIR@")
+SET(AMILabEngine_BINARY_DIR     "@AMILabEngine_BINARY_DIR@")
+
+SET(AMILABENGINE_INCLUDE_DIRS   @AMILABENGINE_INCLUDE_DIRS@)
+
+#
+# finding other libraries
+#
+
+# -- Python --
+SET(PYTHON_EXECUTABLE                   "@PYTHON_EXECUTABLE@")
+
+# -- GCCXML --
+SET(GCCXML                              "@GCCXML@")
+
+# -- Boost --
+SET(Boost_LIBRARY_DIRS                  "@Boost_LIBRARY_DIRS@")
+SET(Boost_INCLUDE_DIR                   "@Boost_INCLUDE_DIR@")
+
+SET(Boost_USE_STATIC_LIBS               @Boost_USE_STATIC_LIBS@)
+
+
+# CMAKE Configuration
+SET(CMAKE_BUILD_TYPE                    "@CMAKE_BUILD_TYPE@")
+

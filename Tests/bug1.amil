@@ -1,0 +1,10 @@
+
+# testing std::string
+s = "a test string"
+s += 1
+
+# testing formatting
+# we can't do '"%1%" % "dd"' anymore
+
+# on a ami_format et format
+# format() qui vient de boost::format() n'est pas prêt: l'operateur % ne prend que les entiers pour l'instant ...

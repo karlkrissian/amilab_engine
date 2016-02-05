@@ -1,0 +1,5 @@
+
+if exists(ModuleExample_obj) {
+  del ModuleExample_obj
+}
+func "Load_ModuleExample"

@@ -1,0 +1,12 @@
+
+#del BoostFileSystemPlugin
+#func "BoostFileSystemPlugin"
+func "Common/ModulePlugin"
+
+if (!exists(BoostFileSystem_obj)) {
+  ModulePlugin BoostFileSystem_obj
+  BoostFileSystem_obj.SetModuleName("BoostFileSystem")
+  BoostFileSystem_obj.Load()
+} else {
+  InfoDialog "The script class BoostFileSystemPlugin to be already instanciated." 
+}

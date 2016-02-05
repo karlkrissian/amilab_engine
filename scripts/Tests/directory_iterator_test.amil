@@ -1,0 +1,13 @@
+di = boost_filesystem_directory_iterator("/home/karl")
+
+printn (*di).status().type()
+
+ftype_ok = (*di).status().type()>1
+
+while ftype_ok { 
+  printn (*di).path().string()
+  ++di
+  ftype = (*di).status().type()
+  printn ftype
+  ftype_ok = ftype>1
+}

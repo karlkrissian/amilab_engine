@@ -1,0 +1,95 @@
+/**
+ * C++ Interface: wrap_${TEMPLATE}
+ *
+ * Description: wrapping ${TEMPLATE}
+ * File generated automatically
+ *
+ * Author: Karl Krissian \<krissian@dis.ulpgc.es\>, (C) 2010
+ *
+ * Copyright: See COPYING file that comes with this distribution
+ *
+ **/
+
+#pragma once
+
+#ifndef _wrap_${TEMPLATENAME}_h_
+#define _wrap_${TEMPLATENAME}_h_
+
+/*
+#include "Variable.hpp"
+#include "ami_object.h"
+*/
+#include "wrapfunction_class.h"
+#include "wrapfunctions.hpp"
+#include "paramlist.h"
+
+${INCLUDEFILES}
+
+// include what is needed for inheritence and for types ...
+${INCLUDE_BASES}
+
+${INCLUDE_TYPEDEF}
+
+#ifndef ${TEMPLATENAME}_declared
+  #define ${TEMPLATENAME}_declared
+  AMI_DECLARE_TYPE(${TEMPLATE});
+#endif
+
+// TODO: check for inheritence ...
+class ${EXPORT_MACRO} WrapClass_${TEMPLATENAME} : public WrapClass<${TEMPLATE} >
+    ${INHERIT_BASES}
+{
+  DEFINE_CLASS(WrapClass_${TEMPLATENAME});
+
+  protected:
+    typedef WrapClass<${TEMPLATE} >::ptr _parentclass_ptr;
+    typedef ${TEMPLATE} ObjectType;
+
+  public:
+    // resolve ambiguities
+    const boost::shared_ptr<${TEMPLATE} >& GetObj() const { return WrapClass<${TEMPLATE} >::GetObj(); }
+    std::string ObjPointerAsString() { return "${TEMPLATENAME}"; }
+
+    /// Provide a default constructor
+    WrapClass_${TEMPLATENAME}() {}
+
+    /// Constructor
+    WrapClass_${TEMPLATENAME}(boost::shared_ptr<${TEMPLATE} > si): 
+      WrapClass<${TEMPLATE} >(si)
+      ${CONSTRUCTOR_BASES}
+    {}
+
+    /// Constructor from const
+    WrapClass_${TEMPLATENAME}(boost::shared_ptr<${TEMPLATE} const> si, bool constant): 
+      WrapClass<${TEMPLATE}>(si, true)
+      ${CONSTRUCTOR_BASES_CONST}
+    {}
+
+    /// Destructor
+    ~WrapClass_${TEMPLATENAME}()
+    {
+      CLASS_MESSAGE("*** Destroying ***");
+    }
+
+    ${ADD_CLASS_CONSTRUCTORS}
+
+    /// Create a variable from a standard pointer
+    static Variable<AMIObject>::ptr CreateVar( ${TEMPLATE}*);
+
+    // Static methods
+    ${ADD_CLASS_STATIC_METHODS}
+
+    // here add each method
+    ${ADD_CLASS_METHOD_ALL}
+
+
+    void AddMethods(WrapClass<${TEMPLATE} >::ptr this_ptr );
+
+};
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass${TEMPLATENAME}_AddStaticMethods( boost::shared_ptr<Variables>& context);
+
+#endif // _wrap_${TEMPLATENAME}_h

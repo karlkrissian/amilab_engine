@@ -1,0 +1,8 @@
+
+ami.MainFrame.AddToMenu("&Modules","&BoostFileSystem","&Load",    \
+    op_system.GetCurrentScriptDir()+"/Load_BoostFileSystem")
+ami.MainFrame.AddToMenu("&Modules","&BoostFileSystem","&ReLoad",  \
+    op_system.GetCurrentScriptDir()+"/ReLoad_BoostFileSystem")
+
+# Checking scripts in subdirectories
+global::RunAdd2Menus(op_system.GetCurrentScriptDir())

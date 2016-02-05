@@ -1,0 +1,66 @@
+
+# ----- CMake information class -----
+CMakeInfo
+
+# ----- std::vector<...> -----
+
+std::vector<double, std::allocator<double> >
+std::vector<double, std::allocator<double> >::iterator
+
+std::vector<float, std::allocator<float> >
+std::vector<float, std::allocator<float> >::iterator
+
+std::vector<int, std::allocator<int> >
+std::vector<int, std::allocator<int> >::iterator
+
+std::vector<long, std::allocator<long> >
+std::vector<long, std::allocator<long> >::iterator
+
+std::vector<unsigned long, std::allocator<unsigned long> >
+std::vector<unsigned long, std::allocator<unsigned long> >::iterator
+
+std::vector<std::string, std::allocator<std::string> >
+std::vector<std::string, std::allocator<std::string> >::iterator
+
+# ----- std::string
+# can't wrap std::string ... so I need specific methods ...
+std::string
+
+
+# ----- boost::format
+boost::format
+ami::format
+myformat
+
+# ----- std::set<...> -----
+
+set_string
+set_string_iterator
+# giving an error now
+#set_string_pair_iterator_bool
+
+# ----- iostream -----
+
+std::ostream
+std::stringstream
+
+# ----- complex numbers ---
+std::complex<float>
+
+# ------ PluginManager ---
+PluginManager
+PluginBase
+
+# ----- boost/filesystem 
+boost::filesystem::path
+boost::filesystem::path::iterator
+boost::filesystem::directory_entry
+boost::filesystem::directory_iterator
+boost::filesystem::recursive_directory_iterator
+boost::system::error_code
+boost::filesystem::space_info
+boost::filesystem::file_status
+
+#
+std::locale
+

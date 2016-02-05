@@ -1,0 +1,35 @@
+/**
+ * C++ Interface: wrap_${FUNCTION}
+ *
+ * Description: wrapping ${FUNCTION}
+ * File generated automatically using CableSwig xml output and a python script
+ *
+ * Author: Karl Krissian \<krissian@dis.ulpgc.es\>, (C) 2010
+ *
+ * Copyright: See COPYING file that comes with this distribution
+ *
+ **/
+
+/*
+//#include "VarContexts.hpp"
+#include "wrapfunctions.hpp"
+#include "ami_class.h"
+#include "ami_object.h"
+#include "ami_function.h"
+*/
+
+#include "wrap_${FUNCTIONNAME}.h"
+
+// get all the required includes
+// #include "..."
+${INCLUDES}
+
+#include <iostream>
+#include <fstream>
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
+
+${IMPLEMENT_WRAP_FUNCTION}

@@ -1,0 +1,10 @@
+
+# this code works
+f = format("%1%")
+f2 = f%1
+printn f2.str()
+
+# this one doesn't ... problem of deleted variable ??
+g = format("%1%") %1
+printn g.str()
+

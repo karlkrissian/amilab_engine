@@ -1,0 +1,43 @@
+
+#ifndef _@CURRENT_LIB@Configure_h_
+#define _@CURRENT_LIB@Configure_h_
+
+#define LIB_STATIC 0
+#define LIB_SHARED 1
+
+#define @CURRENT_LIB@_TYPE LIB_${${CURRENT_LIB}_TYPE}
+
+#if defined(WIN32)
+  //disable warnings on extern before template instantiation
+  #pragma warning (disable : 4231)
+  // annoying warning 4251, passing for now ...
+  #pragma warning (disable : 4251)
+#endif
+
+#if defined(WIN32) && (@CURRENT_LIB@_TYPE==LIB_SHARED)
+  //#pragma warning ( disable : 4275 )
+  #if defined(@CURRENT_LIB@_EXPORTS)
+    #define @CURRENT_LIB@_DECLARE __declspec( dllexport ) 
+    #define @CURRENT_LIB@_EXPIMP_TEMPLATE
+  #else
+    #define @CURRENT_LIB@_DECLARE __declspec( dllimport ) 
+    #define @CURRENT_LIB@_EXPIMP_TEMPLATE extern
+  #endif
+#else
+  #define @CURRENT_LIB@_DECLARE 
+#endif
+
+#if defined(WIN32) && (@CURRENT_LIB@_TYPE==LIB_SHARED)
+  //#pragma warning ( disable : 4275 )
+  #if defined(@CURRENT_LIB@_EXPORTS)
+    #define @CURRENT_LIB@_VAR_EXPORT __declspec( dllexport ) 
+    #define @CURRENT_LIB@_VAR_IMPORT __declspec( dllexport ) extern
+  #else
+    #define @CURRENT_LIB@_VAR_IMPORT __declspec( dllimport ) 
+  #endif
+#else
+  #define @CURRENT_LIB@_VAR_EXPORT 
+  #define @CURRENT_LIB@_VAR_IMPORT extern
+#endif
+
+#endif // _@CURRENT_LIB@Configure_h_

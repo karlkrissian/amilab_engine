@@ -1,0 +1,170 @@
+
+del ModulePlugin
+
+
+Class ModulePlugin \
+{
+
+  proc ::Init() {
+    ::plugin_mgr= PluginManager()
+    ::f_dynlibs = vector_string()
+    ::quiet=false
+    ::ModuleName = "Module"
+    ::IsLoaded = false
+  }
+
+  proc ::SetModuleName( STRING mname ) {
+    ::ModuleName = mname
+  }
+
+  proc ::SetQuiet(NUM q) {
+    ::quiet=q
+  }
+
+  proc ::LoadOK() {
+    return = ::IsLoaded
+  }
+
+  #
+  # Try to find the right plugin dynamic library
+  # test for files ending with either .so or .dll
+  # return true if at least one file is found
+  # the resulting files are stored in ::f_dynlibs
+  #  
+  proc ::CheckModule( ) \
+  {
+    # Make this platform independent, using a .in file ?
+    #
+    # Look with the executable path
+    # 1. get rid of posible 'bin' directory at the end
+    # 2. add lib/amilab-{version}/plugin/
+    #
+
+    # create absolute executable path
+    execpath = boost_filesystem_system_complete(boost_filesystem_path($0))
+    # get rid of dots ...
+    execpath = boost_filesystem_canonical(execpath)
+    execpath2 = execpath
+
+    # list directory in executable path
+    
+
+    # found last directory
+    dir_it = execpath2.end()
+    # decrement by 2
+    filename = --dir_it;
+    --dir_it
+    last_dir = (*dir_it).c_str()
+
+    if (boost_algorithm_to_upper_copy_L_std_string_G_(last_dir)=="DEBUG") {
+      last_removed = last_dir
+      execpath2 = execpath2.parent_path()
+      execpath2 = execpath2.parent_path()
+      execpath2 /= filename
+    }
+    if (boost_algorithm_to_upper_copy_L_std_string_G_(last_dir)=="RELEASE") {
+      last_removed = last_dir
+      execpath2 = execpath2.parent_path()
+      execpath2 = execpath2.parent_path()
+      execpath2 /= filename
+    }
+    if (boost_algorithm_to_upper_copy_L_std_string_G_(last_dir)=="BIN") {
+      execpath2 = execpath2.parent_path()
+      execpath2 = execpath2.parent_path()
+      execpath2 /= filename
+    }
+
+    execpath = execpath.parent_path()
+    execpath /= "lib"
+    execpath /= "amilab-"+CMakeInfo.ENGINE_VERSION()
+    execpath /= "plugin"
+    execpath /= filename
+
+    execpath2 = execpath.parent_path()
+    execpath2 /= "lib"
+    execpath2 /= "amilab-"+CMakeInfo.ENGINE_VERSION()
+    execpath2 /= "plugin"
+
+    if (exists(last_removed)) {
+        execpath2 /= last_removed
+    }
+    execpath2 /= filename
+
+    dllpath  = execpath.c_str()
+    dllpath2 = execpath2.c_str()
+
+    if (!boost_filesystem_exists(dllpath)) && (boost_filesystem_exists(dllpath2)) {
+      dllpath = dllpath2
+    }
+    printn "dllpath=" +dllpath
+    printn "dllpath2="+dllpath2
+
+    ::f_dynlibs.clear()
+
+    if CMakeInfo.UNIX()!=""   { ext = "so";  }
+    if CMakeInfo.APPLE()!=""  { ext = "so";  }
+    if CMakeInfo.Win32()!=""  { ext = "dll"; }
+
+    found_libs = wx.wxDir.GetAllFiles(dllpath,&::f_dynlibs,"*%1%." % ::ModuleName+\
+                     "%1%" % ext)
+
+
+    if found_libs>1 {
+      InfoDialog "Found several libraries under directory %1%" % dllpath
+    }
+    return=(found_libs)>=1
+  }
+  
+  proc ::Load() {
+    ::CheckModule()
+    found_libs  = ::f_dynlibs.Count()>0
+    
+    load_ok=false
+    # try to load .so library
+    if found_libs {
+      libname = wx.FromWxString(::f_dynlibs[0])
+      SetStatusText("Loading "+libname)
+      load_ok = ::plugin_mgr.Load(libname)
+    }
+
+    #if wx.wxFileName(dllpath+"/libModule.so").FileExists() {
+    #}
+    #if wx.wxFileName(dllpath+"/Debug/Module.dll").FileExists() {
+      #SetStatusText("Loading "+dllpath+"/Debug/Module.dll")
+      #::plugin_mgr.Load(dllpath+"/Debug/Module.dll")
+      #found=true
+    #}
+    if load_ok {
+      ::plugin_mgr.Getplugin().Execute()
+    } else {
+       if (!::quiet) {
+        InfoDialog("Dynamic Library not found ...")
+      } else {
+        SetStatusText("Dynamic Library not found ...")
+      }
+    }
+    ::IsLoaded = load_ok
+    return = load_ok
+  }
+
+  proc ::UnLoad() {
+    if ::IsLoaded {
+      printn "::Unload() begin"
+      # should delete variables in Builtin
+      printn "::ModuleName = %1%" % ::ModuleName
+      eval "del %1%;" % ::ModuleName
+      # need to call detach first, otherwise SEGFAULT!
+      #::plugin_mgr.Detach()
+      ::plugin_mgr.Unload()
+      ::IsLoaded = false
+      printn "::Unload() end"
+    }
+  }
+
+  proc ::ReLoad() {
+    ::UnLoad()
+    ::Load()
+  }
+
+  ::Init()
+}

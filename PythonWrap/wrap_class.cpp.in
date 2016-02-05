@@ -1,0 +1,123 @@
+/**
+ * C++ Interface: wrap_${TEMPLATE}
+ *
+ * Description: wrapping ${TEMPLATE}
+ * File generated automatically using CableSwig xml output and a python script
+ *
+ * Author: Karl Krissian \<krissian@dis.ulpgc.es\>, (C) 2010
+ *
+ * Copyright: See COPYING file that comes with this distribution
+ *
+ **/
+
+/*
+//#include "VarContexts.hpp"
+#include "wrapfunctions.hpp"
+#include "ami_class.h"
+#include "ami_object.h"
+#include "ami_function.h"
+*/
+
+// including this file first to try precompiled headers
+#include "wrap_prec.hpp"
+
+#include "wrap_${TEMPLATE}.h"
+
+// get all the required includes
+// #include "..."
+${INCLUDES}
+
+std::vector<std::string> AMILabType<${TEMPLATE}>::conversion_types =  { };
+
+
+#include "TypeConversion.h"
+// global variable list all existing types, to deal with type conversion
+LanguageBase_VAR_IMPORT TypeConversion GB_typeconversions;
+
+// needed to allow NULL pointer parameter
+extern Variable<int>::ptr nullvar;
+extern bool CheckNullVar(ParamList* _p, int _n);
+
+//----------------------------------------------------------------------
+//
+// static member for creating a variable from a ParamList
+//
+template <> AMI_DLLEXPORT
+BasicVariable::ptr WrapClass<${TEMPLATE}>::CreateVar( ParamList* p, int stacklevel, bool quiet)
+{
+${IMPLEMENT_CREATEVAR}
+}
+
+//------------------------------------------------------------------------------
+static boost::shared_ptr<${TEMPLATE} >  CreateSmartPointer_${TEMPLATE}(
+                                    ${TEMPLATE}* sp)
+                                    //, WrapClass_${TEMPLATE}* _this)
+{
+  //boost::shared_ptr<${TEMPLATE} > res;
+  //(
+  //  sp  
+  //  ${IMPLEMENT_DELETER} );
+${IMPLEMENT_SMART_POINTER}
+  return res;
+}
+
+
+${IMPLEMENT_TYPE}
+
+
+//------------------------------------------------------------------------------
+//
+// static member for creating a variable from a pointer to ${TEMPLATE}
+//
+Variable<AMIObject>::ptr WrapClass_${TEMPLATE}::CreateVar( ${TEMPLATE}* sp)
+{
+  boost::shared_ptr<${TEMPLATE}> di_ptr = CreateSmartPointer_${TEMPLATE}(sp); 
+  //,this);
+  
+  Variable<AMIObject>::ptr res = 
+    WrapClass<${TEMPLATE}>::CreateVar(
+      new WrapClass_${TEMPLATE}(di_ptr)
+    );
+  return res;
+}
+
+//----------------------------------------------------------------------
+void WrapClass_${TEMPLATE}::AddMethods(WrapClass<${TEMPLATE}>::ptr this_ptr )
+{
+  // todo: check that the method name is not a token ?
+  ${AddVar_method_all}
+
+  ${AddPublicFields}
+
+  ${METHODS_BASES}
+};
+
+
+/*
+  * Adds the constructor and the static methods to the given context
+  */
+void WrapClass${TEMPLATE}_AddStaticMethods( boost::shared_ptr<Variables>& context)
+{
+  // Create a new context (or namespace) for the class
+  AMIObject::ptr amiobject(new AMIObject);
+  amiobject->SetName("${TEMPLATE}");
+  ${AddVar_constructor}
+  ${AddVar_static_methods}
+  ${AddPublicEnums}
+  ${AddPublicTypedefs}
+
+  GB_typeconversions.RegisterType<${TEMPLATE}>();
+  
+  BasicVariable* _tmp = new Variable<AMIObject>(amiobject);
+
+  //  add it to the given context
+  //context->AddVar<AMIObject>( amiobject->GetName().c_str(), amiobject, context);
+  Variables_AddVar(context, amiobject->GetName().c_str(), _tmp, context);
+  
+}
+
+//----------------------------------------------------------------------
+// PUBLIC METHODS
+//----------------------------------------------------------------------
+
+${WRAP_PUBLIC_METHODS}

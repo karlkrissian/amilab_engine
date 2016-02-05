@@ -1,0 +1,14 @@
+# ignore backups
+*~
+*.bak
+*.backup
+
+
+# generated files
+*.pyc
+
+# logs
+logs
+*.log
+
+build*/
