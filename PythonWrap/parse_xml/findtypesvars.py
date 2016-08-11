@@ -73,8 +73,26 @@ class FindTypesAndVariables(handler.ContentHandler):
       if re.match(args.val.filter, classname) != None:
         self.number_of_libclasses = self.number_of_libclasses +1
     
+    # Set Context
+    context = attrs.get('context', None)
+    if context != None:
+      self.argtype.SetContext(context)
     
     demangled=attrs.get('demangled',None)
+    #print "demangled = ",demangled
+    #print "name = ",name
+    #print "----- classname =",classname,
+    if classname!=None:
+        if demangled==None:
+            demangled=classname
+            #print "context = ", context,
+            if context in config.types:
+                #print " context type =",config.types[context].GetType(),
+                if config.types[context].GetType() in [ "Namespace", "Class", "Struct" ]:
+                    #print config.types[context].GetDemangled()
+                    if config.types[context].GetDemangled()!="::":
+                        demangled = config.types[context].GetDemangled() + "::"+demangled
+    #print " setting demangled to ",demangled
     self.argtype.SetDemangled(demangled)
     
     #print classname
@@ -106,12 +124,7 @@ class FindTypesAndVariables(handler.ContentHandler):
     
     # Abstract
     self.argtype.abstract = attrs.get('abstract', '0')
-    
-    # Set Context
-    context = attrs.get('context', None)
-    if context != None:
-      self.argtype.SetContext(context)
-    
+        
     # File id
     self.argtype.fileid = attrs.get('file', None)
     #print "fileid = ", self.argtype.fileid 
