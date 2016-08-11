@@ -50,7 +50,9 @@ MACRO( RUN_GCCXML XML_INPUT XML_OUTPUT)
 
   WRAP_MESSAGE("Try to generate XML file ${XML_OUTPUT}")
 
-  SET(GCCXML_CMD ${GCCXML}   )
+#   SET(GCCXML_CMD ${GCCXML}   )
+   SET(GCCXML_CMD castxml -x c++ --castxml-gccxml -v -std=c++98 -fopenmp=libomp )
+#-I/usr/include/c++/5.3.1/ -I/usr/include/c++/5.3.1/x86_64-redhat-linux )
 
   # remove duplicates
   LIST(REMOVE_DUPLICATES GCCXML_INCLUDES)
@@ -94,7 +96,7 @@ MACRO( RUN_GCCXML XML_INPUT XML_OUTPUT)
   WRAP_MESSAGE("Running gccxml")
   # Execute the command
   EXECUTE_PROCESS(
-    COMMAND ${GCCXML_CMD}  "-fxml=${XML_OUTPUT}"
+    COMMAND ${GCCXML_CMD}  -o ${XML_OUTPUT}
     RESULT_VARIABLE GCCXML_CMD_RESULT
     OUTPUT_VARIABLE GCCXML_CMD_OUTPUT
     ERROR_VARIABLE  GCCXML_CMD_ERROR
