@@ -42,6 +42,10 @@ classes_startswith_blacklist=[
   'std::_Iterator_with_base<',            # VC++ gccxml 
   'std::_Container_base_aux_alloc_real<', # idem
   #'boost::iterator_facade<'
+  'boost::iterators::detail::iterator_facade_base', # filenames too long
+  '__gnu_cxx::new_allocator',
+  'std::basic_ios',
+  'boost::filesystem',
 ]
 
 # ignore specific members
