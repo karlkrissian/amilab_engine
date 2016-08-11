@@ -73,10 +73,18 @@ def ClassConstructor(classname):
 
 def FindIncludeFile(classname,fileid):
   try:
+    #print
+    #print "***************** FindIncludeFile ", classname, " ", fileid
     #print "classname=",classname, " keys:", classes_inc.classes_includes.keys()
     if classname in classes_inc.classes_includes.keys():
       #print "*"
       return '#include "{0}"'.format(classes_inc.classes_includes[classname])
+    else:
+      # search pattern that fit classname
+      for pattern in classes_inc.classes_includes.keys():
+        if classname.find(pattern)>-1:
+          #print "found pattern for include filename"
+          return '#include "{0}"'.format(classes_inc.classes_includes[pattern])
   except:
     pass
   if config.libmodule != None:
@@ -173,41 +181,48 @@ def MissingTypes(classname,method,check_includes=False):
   #print  "Checking types for {0}".format(method.name)
   missing_types=[]
   if method.returntype!=None:
-    #typename = config.types[method.returntype].GetDemangled()
-    typeid=config.types[method.returntype].GetMainTypeId()
-    # allow typedefs (using demangled from maintypeid) ...
-    typename = config.types[typeid].GetDemangled()
-    shared_type = config.IsSharedPtr(typename)
-    if shared_type!=None:
-      avail = AvailableType(shared_type,typeid,missing_types,check_includes,True)
-    else:
-      avail = AvailableType(typename,typeid,missing_types,check_includes,True)
-  for a in method.args:
-    typename=config.types[a.typeid].GetDemangled()
-    typefullname=config.types[a.typeid].GetFullString()
-    #
-    ispointer= config.types[a.typeid].GetType()=="PointerType"
-    isconstpointer = typefullname.endswith("const *")
-    if typename=='void' and ispointer:
-      print "\t\tneed to deal with 'void pointer' here"
-    else:
-      #
-      # discard triple pointers or double pointers with const (TODO: improve this part)
-      if (typefullname.endswith("* * *")) or (typefullname.endswith("* const *")):
-        missing_types.append(typefullname)
+    if method.returntype in config.types:
+      #typename = config.types[method.returntype].GetDemangled()
+      typeid=config.types[method.returntype].GetMainTypeId()
+      # allow typedefs (using demangled from maintypeid) ...
+      typename = config.types[typeid].GetDemangled()
+      shared_type = config.IsSharedPtr(typename)
+      if shared_type!=None:
+        avail = AvailableType(shared_type,typeid,missing_types,check_includes,True)
       else:
-        #print "a.typeid = {0}".format(a.typeid)
-        typeid=config.types[a.typeid].GetMainTypeId()
-        #print "main typeid = {0}".format(typeid)
-        # allow typedefs (using demangled from maintypeid)...
-        typename = config.types[typeid].GetDemangled()
-        shared_type = config.IsSharedPtr(typename)
-        if shared_type!=None:
-          avail = AvailableType(shared_type,typeid,missing_types,check_includes)
+        avail = AvailableType(typename,typeid,missing_types,check_includes,True)
+    else:
+      missing_types.append(method.returntype)
+  
+  for a in method.args:
+    if a.typeid not in config.types:
+      missing_types.append(typefullname)
+    else:
+      typename=config.types[a.typeid].GetDemangled()
+      typefullname=config.types[a.typeid].GetFullString()
+      #
+      ispointer= config.types[a.typeid].GetType()=="PointerType"
+      isconstpointer = typefullname.endswith("const *")
+      if typename=='void' and ispointer:
+        print "\t\tneed to deal with 'void pointer' here"
+      else:
+        #
+        # discard triple pointers or double pointers with const (TODO: improve this part)
+        if (typefullname.endswith("* * *")) or (typefullname.endswith("* const *")):
+          missing_types.append(typefullname)
         else:
-          avail = AvailableType(typename,typeid,missing_types,check_includes)
-        if (not avail):
-          utils.WarningMessage("type {0} not available: {1}".format(typename,config.types[typeid].GetType()))
+          #print "a.typeid = {0}".format(a.typeid)
+          typeid=config.types[a.typeid].GetMainTypeId()
+          #print "main typeid = {0}".format(typeid)
+          # allow typedefs (using demangled from maintypeid)...
+          typename = config.types[typeid].GetDemangled()
+          shared_type = config.IsSharedPtr(typename)
+          if shared_type!=None:
+            avail = AvailableType(shared_type,typeid,missing_types,check_includes)
+          else:
+            avail = AvailableType(typename,typeid,missing_types,check_includes)
+          if (not avail):
+            utils.WarningMessage("type {0} not available: {1}".format(typename,config.types[typeid].GetType()))
   res = ""
   if len(missing_types)>0:
     for t in missing_types:
@@ -468,9 +483,9 @@ class ParsePublicMembers:
           firstargtype = config.types[config.types[firstargid].GetMainTypeId()].GetType()
           # for the moment only limited operator support
           if firstargtype in ['Class', 'Struct']:
-            print "OperatorFunction ",opname
-            print "OperatorFunction: ", config.types[firstargid].GetDemangled(), ":", firstargid, ", ", \
-                  firstargtype
+            #print "OperatorFunction ",opname
+            #print "OperatorFunction: ", config.types[firstargid].GetDemangled(), ":", firstargid, ", ", \
+                  #firstargtype
             isok=True
             # set the class as the current context
             context = config.types[firstargid].GetMainTypeId()
@@ -609,6 +624,8 @@ class ParsePublicMembers:
       self.public_members.OperatorMethods.append(self.method)
     if name=='Converter':
       self.method.converter=True
+      if self.method.name==None:
+          self.method.name="Convert"
       self.public_members.Converters.append(self.method)
     if name=='Destructor':
       self.public_members.destructor = self.method
@@ -633,7 +650,7 @@ class ParsePublicMembers:
           print "inopfunc, name=",name, " num args:",len(self.method.args), " num methods:", len(self.public_members.OperatorMethods) 
           self.public_members.OperatorMethods.pop()
         else:
-          print "poping first argument"
+          #print "poping first argument"
           self.method.args.pop(0)
         self.inopfunc = False
     if (self.inenum==True) and (name=="Enumeration"):
@@ -874,18 +891,22 @@ def ImplementMethodCall(classname, method, numparam, constructor=False, ident=''
                   res += ident+'    return AMILabType<{0} >::CreateVarFromSmtPtr(this->_objectptr->GetObj());\n'.format(typename)
                 res += ident+'  return AMILabType<{0} >::CreateVar(&res,true);\n'.format(typename)
               else:
-                 if rettype.GetFullString().endswith('* &'):
-                 #if config.types[method.returntype].GetFullString().endswith('&'):
-                   res += ident+'  return AMILabType<{0} >::CreateVar(res,true);\n'.format(typename)
+                 if rettype.GetFullString().endswith('const *'):
+                     # deal with const pointer: create new variable
+                    res += ident+'  return AMILabType<{0} >::CreateVar(*res);\n'.format(typename)
                  else:
-                   # rely on AMILabType to deal with "T const &" creation
-                   rettype_mainid = rettype.GetMainTypeId()
-                   if rettype.GetFullString().endswith('const &') and \
-                      not(rettype.GetFullString().endswith('* const &')):
-                     res += ident+'  return AMILabType<{0} >::'.format(typename)\
-                                 +'CreateVar(res);\n'
-                   else:
-                     res += ident+'  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
+                    if rettype.GetFullString().endswith('* &'):
+                        #if config.types[method.returntype].GetFullString().endswith('&'):
+                        res += ident+'  return AMILabType<{0} >::CreateVar(res,true);\n'.format(typename)
+                    else:
+                        # rely on AMILabType to deal with "T const &" creation
+                        rettype_mainid = rettype.GetMainTypeId()
+                        if rettype.GetFullString().endswith('const &') and \
+                            not(rettype.GetFullString().endswith('* const &')):
+                            res += ident+'  return AMILabType<{0} >::'.format(typename)\
+                                        +'CreateVar(res);\n'
+                        else:
+                            res += ident+'  return AMILabType<{0} >::CreateVar(res);\n'.format(typename)
             else:
               res += ident+'  return AMILabType<{0} >::CreateVarFromSmtPtr(res);\n'.format(shared_type)
   return res
@@ -1330,6 +1351,7 @@ def WrapClass(classname,include_file,inputfile):
     inherit_bases=''
     constructor_bases=''
     constructor_bases_const=''
+    type_conversions = []
     methods_bases='// Adding Bases\n'
     #if len(fm.Fields)==0 and len(fm.Enumerations)==0\
        #and len(dh.bases)>0:
@@ -1358,6 +1380,7 @@ def WrapClass(classname,include_file,inputfile):
       #              basename1 in config.available_classes
       basename_ok = baseusedname in config.available_classes_usedname
       if basename_ok:
+        type_conversions.append('AMILabType<{0}>::name_as_string()'.format(basename))
         include_bases+='#include "wrap_{0}.h"\n'.format(baseusedname)
         inherit_bases+=', public {0}  {1}'.format(\
             virtualstring, wrapped_base)
@@ -1657,18 +1680,21 @@ def WrapClass(classname,include_file,inputfile):
       n=0
       add_public_typedefs += "// Adding public typedefs \n"
     for td in fm.Typedefs:
-      add_public_typedefs += indent
-      # need to find the variable that corresponds to the type to add ...
-      # for now just adding a string
-      st = '{0}  --  {1}'.format(td.GetFullString(),\
-            config.ClassShortName(\
-                config.types[td._reftypeid].GetString(),args.val.libname))
-      add_public_typedefs += 'BasicVariable::ptr type_{0} = AMILabType<std::string>::CreateVar(new std::string("{1}"));\n'.format(n,st)
-      add_public_typedefs += indent
-      add_public_typedefs += 'type_{0}->Rename("{1}");\n'.format(n,td.name)
-      add_public_typedefs += indent
-      add_public_typedefs += "Variables_AddVar(amiobject->GetContext(),type_{0}->Name(),type_{0},context);\n".format(n)
-      n=n+1
+      if td._reftypeid in config.types:
+        add_public_typedefs += indent
+        # need to find the variable that corresponds to the type to add ...
+        # for now just adding a string
+        st = '{0}  --  {1}'.format(td.GetFullString(),\
+              config.ClassShortName(\
+                  config.types[td._reftypeid].GetString(),args.val.libname))
+        add_public_typedefs += 'BasicVariable::ptr type_{0} = AMILabType<std::string>::CreateVar(new std::string("{1}"));\n'.format(n,st)
+        add_public_typedefs += indent
+        add_public_typedefs += 'type_{0}->Rename("{1}");\n'.format(n,td.name)
+        add_public_typedefs += indent
+        add_public_typedefs += "Variables_AddVar(amiobject->GetContext(),type_{0}->Name(),type_{0},context);\n".format(n)
+        n=n+1
+      else:
+        add_public_typedefs += indent + "// type {} not recognized".format(td._reftypeid)
 
     #print "add public enumerations"
     # Add public Enumerations
@@ -1921,6 +1947,16 @@ def WrapClass(classname,include_file,inputfile):
       if missingtypes!="":
         impl += "*/\n"
         
+    type_conversions_string="{ "
+    first_type = True
+    for s in type_conversions:
+        if first_type:
+            type_conversions_string += s
+            first_type = False
+        else:
+            type_conversions_string += ", "+s
+    type_conversions_string += " }"
+    
     # in place replace TEMPLATE by classname
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
     # in place replace ${ADD_CLASS_METHOD_ALL} by class_decl
@@ -1929,6 +1965,7 @@ def WrapClass(classname,include_file,inputfile):
       line = line.replace("${INCLUDES}",                config.CreateIncludes())
       line = line.replace("${IMPLEMENT_TYPE}",          implement_type)
       line = line.replace("${IMPLEMENT_CREATEVAR}",     implement_createvar)
+      line = line.replace("${TYPE_CONVERSIONS}",        type_conversions_string)
       #line = line.replace("${IMPLEMENT_DELETER}",       implement_deleter)
       line = line.replace("${IMPLEMENT_SMART_POINTER}", implement_smart_pointer)
       line = line.replace("${TEMPLATE}",                config.ClassTypeDef(classname))

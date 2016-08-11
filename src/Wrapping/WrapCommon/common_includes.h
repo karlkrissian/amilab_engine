@@ -1,4 +1,11 @@
-#pragma once
+
+#ifdef __castxml__
+#define __GCCXML__
+#endif
+
+#ifndef __castxml__
+    #pragma once
+#endif
 
 #include <vector>
 #include <iostream>
@@ -27,6 +34,7 @@ class myformat: public boost::format
   myformat&  operator%(int& v)            {    *this%v;    return *this;  }
 };
 
+
 #ifdef __GCCXML__
  
   //----------------------------------------------------------------------------
@@ -53,6 +61,15 @@ class myformat: public boost::format
   vector_long  ::iterator vli;
   vector_ulong ::iterator vuli;
   vector_string::iterator vsi;
+  
+  // typedef
+  typedef vector_double::iterator vector_double_it;
+  typedef vector_float ::iterator vector_float_it;
+  typedef vector_int   ::iterator vector_int_it;
+  typedef vector_long  ::iterator vector_long_it;
+  typedef vector_ulong ::iterator vector_ulong_it;
+  typedef vector_string::iterator vector_string_it;
+
 
   //----------------------------------------------------------------------------
   // std::set of basic types
@@ -84,12 +101,12 @@ class myformat: public boost::format
 
   // use std::string operators
   template std::string  std::operator+ (const std::string&, const std::string&);
-  template bool         std::operator==(const std::string&, const std::string&);
-  template bool         std::operator!=(const std::string&, const std::string&);
-  template bool         std::operator< (const std::string&, const std::string&);
-  template bool         std::operator<=(const std::string&, const std::string&);
-  template bool         std::operator> (const std::string&, const std::string&);
-  template bool         std::operator>=(const std::string&, const std::string&);
+//   template bool         std::operator==(const std::string&, const std::string&);
+//   template bool         std::operator!=(const std::string&, const std::string&);
+//   template bool         std::operator< (const std::string&, const std::string&);
+//   template bool         std::operator<=(const std::string&, const std::string&);
+//   template bool         std::operator> (const std::string&, const std::string&);
+//   template bool         std::operator>=(const std::string&, const std::string&);
   
   // boost format
 //   template class boost::basic_format<char>;
@@ -120,6 +137,17 @@ class myformat: public boost::format
 #endif // __GCCXML__
 
 #include <boost/filesystem.hpp>
+   
+#ifdef __GCCXML__
+typedef boost::filesystem::path                           boost_filesystem_path;
+typedef boost::filesystem::path::iterator                 boost_filesystem_path_iterator;
+typedef boost::filesystem::directory_entry                boost_filesystem_directory_entry;
+typedef boost::filesystem::directory_iterator             boost_filesystem_directory_iterator;
+typedef boost::filesystem::recursive_directory_iterator   boost_filesystem_recursive_directory_iterator;
+typedef boost::system::error_code                         boost_system_error_code;
+typedef boost::filesystem::space_info                     boost_filesystem_space_info;
+typedef boost::filesystem::file_status                    boost_filesystem_file_status;
+#endif    
   
 // // trying iostream maybe should be moved from Algorithms to here ...
 // #include <iostream>

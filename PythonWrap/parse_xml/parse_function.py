@@ -130,10 +130,19 @@ class FindFunction(handler.ContentHandler):
     if (name != "Function"): return
 
     funcname = attrs.get('name', None)
+    context  = attrs.get('context', None)
     demangled=attrs.get('demangled',None)
     if (funcname != self.search_funcname):
       if demangled==None: 
-        return
+        demangled=funcname
+        if context in config.types:
+            #print "context type =",config.types[context].GetType()
+            if config.types[context].GetType()=="Namespace":
+                #print config.types[context].GetDemangled()
+                if config.types[context].GetDemangled()!="::":
+                    demangled = config.types[context].GetDemangled() + "::"+demangled
+        if (demangled != self.search_funcname):
+            return
       else:
         if  (self.search_funcname != demangled) and \
             (not (self.search_funcname+"(" in demangled)):

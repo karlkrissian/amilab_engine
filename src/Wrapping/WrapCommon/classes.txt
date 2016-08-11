@@ -4,23 +4,35 @@ CMakeInfo
 
 # ----- std::vector<...> -----
 
-std::vector<double, std::allocator<double> >
-std::vector<double, std::allocator<double> >::iterator
+#std::vector<double, std::allocator<double> >
+#std::vector<double, std::allocator<double> >::iterator
+vector_double
+vector_double_it
 
-std::vector<float, std::allocator<float> >
-std::vector<float, std::allocator<float> >::iterator
+#std::vector<float, std::allocator<float> >
+#std::vector<float, std::allocator<float> >::iterator
+vector_float
+vector_float_it
 
-std::vector<int, std::allocator<int> >
-std::vector<int, std::allocator<int> >::iterator
+#std::vector<int, std::allocator<int> >
+#std::vector<int, std::allocator<int> >::iterator
+vector_int
+vector_int_it
 
-std::vector<long, std::allocator<long> >
-std::vector<long, std::allocator<long> >::iterator
+#std::vector<long, std::allocator<long> >
+#std::vector<long, std::allocator<long> >::iterator
+vector_long
+vector_long_it
 
-std::vector<unsigned long, std::allocator<unsigned long> >
-std::vector<unsigned long, std::allocator<unsigned long> >::iterator
+#std::vector<unsigned long, std::allocator<unsigned long> >
+#std::vector<unsigned long, std::allocator<unsigned long> >::iterator
+vector_ulong
+vector_ulong_it
 
-std::vector<std::string, std::allocator<std::string> >
-std::vector<std::string, std::allocator<std::string> >::iterator
+#std::vector<std::string, std::allocator<std::string> >
+#std::vector<std::string, std::allocator<std::string> >::iterator
+vector_string
+vector_string_it
 
 # ----- std::string
 # can't wrap std::string ... so I need specific methods ...
@@ -45,21 +57,21 @@ std::ostream
 std::stringstream
 
 # ----- complex numbers ---
-std::complex<float>
+#std::complex<float>
 
 # ------ PluginManager ---
 PluginManager
 PluginBase
 
 # ----- boost/filesystem 
-boost::filesystem::path
-boost::filesystem::path::iterator
-boost::filesystem::directory_entry
-boost::filesystem::directory_iterator
-boost::filesystem::recursive_directory_iterator
-boost::system::error_code
-boost::filesystem::space_info
-boost::filesystem::file_status
+#boost_filesystem_path
+#boost_filesystem_path_iterator
+#boost_filesystem_directory_entry
+#boost_filesystem_directory_iterator
+#boost_filesystem_recursive_directory_iterator
+#boost_system_error_code
+#boost_filesystem_space_info
+#boost_filesystem_file_status
 
 #
 std::locale

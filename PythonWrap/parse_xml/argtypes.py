@@ -193,14 +193,14 @@ class TypedefInfo(ArgTypeBase):
       return self.GetId()
 
   def GetDemangled(self):
-    maintyperef = config.types[self._reftypeid].GetMainTypeId()
-    if config.types[maintyperef].GetType()=="MethodType":
-      typename = self._name
-    else:
-      if self._reftypeid in config.types.keys():
-        typename=config.types[self._reftypeid].GetDemangled()
+    if self._reftypeid in config.types.keys():
+      maintyperef = config.types[self._reftypeid].GetMainTypeId()
+      if config.types[maintyperef].GetType()=="MethodType":
+        typename = self._name
       else:
-        typename=self._reftypeid
+        typename=config.types[self._reftypeid].GetDemangled()
+    else:
+      typename=self._reftypeid
     return typename
 
 

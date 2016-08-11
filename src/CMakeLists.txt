@@ -341,7 +341,7 @@ IF(AMI_CHECK_BRANCH)
   
 ENDIF(AMI_CHECK_BRANCH)
 
-OPTION(AMI_ENABLE_WRAPPING "Enable Automatic Wrapping: need gccxml, python, ..." ON)
+OPTION(AMI_ENABLE_WRAPPING "Enable Automatic Wrapping: need castxml, python, ..." ON)
 
 IF(AMI_ENABLE_WRAPPING)
   FIND_PACKAGE( GCCXML REQUIRED)

@@ -106,6 +106,9 @@ class AMILabType {
     static BasicVariable::ptr CreateVar(T* val, bool nodeleter=false)
     { return BasicVariable::ptr(); }
 
+    static BasicVariable::ptr CreateVar(const T* val, bool nodeleter=false)
+    { return BasicVariable::ptr(); }
+    
     // double pointer
     static BasicVariable::ptr CreateVar(T** val, bool nodeleter=false)
     { return BasicVariable::ptr(); }

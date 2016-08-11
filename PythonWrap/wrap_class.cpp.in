@@ -27,7 +27,7 @@
 // #include "..."
 ${INCLUDES}
 
-std::vector<std::string> AMILabType<${TEMPLATE}>::conversion_types =  { };
+std::vector<std::string> AMILabType<${TEMPLATE}>::conversion_types = ${TYPE_CONVERSIONS};
 
 
 #include "TypeConversion.h"

@@ -384,20 +384,20 @@ if __name__ == '__main__':
       #print "demanged_typefs:", fpm.parse_public_members.demangled_typedefs
       # check for possible typedefs
       for a in ancestors:
-        #print "Checking '{0}'".format(a)
+        print "Checking '{0}'".format(a)
         if a in fpm.parse_public_members.demangled_typedefs.keys():
-          #print "Processing {0}".format(a)
+          print "Processing1 {0}".format(a)
           ancestors_toremove.append(a)
           # replace it with its referenced type
           # find referenced type
           t = fpm.parse_public_members.demangled_typedefs[a]
           refid = t.GetMainTypeId()
-          #print "refid = {0}".format(refid)
+          print "refid = {0}".format(refid)
           if refid in config.types.keys():
-            print "adding '{0}' ".format(config.types[refid].GetFullString())
+            print "adding 11 '{0}' ".format(config.types[refid].GetFullString())
             ancestors_toadd.append(config.types[refid].GetFullString())
         if a in typedefs_global.keys():
-          #print "Processing {0}".format(a)
+          print "Processing2 {0}".format(a)
           ancestors_toremove.append(a)
           # replace it with its referenced type
           # find referenced type
@@ -405,7 +405,12 @@ if __name__ == '__main__':
           refid = t
           #print "refid = {0}".format(refid)
           if refid in config.types.keys():
-            print "adding '{0}' ".format(config.types[refid].GetFullString())
+            if config.types[refid].GetFullString()=='iterator':
+              print config.types[refid].GetMainTypeId()
+              print config.types[config.types[refid].GetMainTypeId()].GetType()
+              print config.types[config.types[refid].GetMainTypeId()].GetContext()
+              print config.types[config.types[refid].GetMainTypeId()].GetName()
+            print "adding 21 '{0}' ".format(config.types[refid].GetFullString())
             ancestors_toadd.append(config.types[refid].GetFullString())
         if a in typedefs_namespace.keys():
           #print "Processing {0}".format(a)
@@ -416,7 +421,7 @@ if __name__ == '__main__':
           refid = t
           #print "refid = {0}".format(refid)
           if refid in config.types.keys():
-            print "adding '{0}' ".format(config.types[refid].GetFullString())
+            print "adding 22 '{0}' ".format(config.types[refid].GetFullString())
             ancestors_toadd.append(config.types[refid].GetFullString())
       
       # remove processed typedefs
@@ -648,9 +653,9 @@ if __name__ == '__main__':
     nmax=args.val.max
     #print "Maximum classes set to {0}".format(nmax)
     while (len(config.needed_classes)>0) and (n<nmax):
-      #print "\n\n needed classes:", config.needed_classes, "\n\n"
+      print "\n\n needed classes:", config.needed_classes, "\n\n"
       cl = config.needed_classes.pop()
-      #print "Class: {0} \t usedname: {1}".format(cl,wrap_class.ClassUsedName(cl))
+      print "Class: {0}".format(cl)
       config.include_list = []
       config.declare_list = []
       wrap_class.HTMLInitialization(  args.val.generate_html, \

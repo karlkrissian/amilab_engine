@@ -6,6 +6,7 @@
 
 # generated files
 *.pyc
+GeneratedFlexBison/
 
 # logs
 logs
